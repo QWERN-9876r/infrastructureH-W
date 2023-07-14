@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+npm test
+
+node ./helpersForCommit/checkTestSolution.js
+if [ $? != 0 ]
+then {
+	echo -e "\033[31m unit тесты не прошли! \n\033"
+	exit 1
+}
+else {
+	echo "unit тесты прошли!"
+	#npm run e2e
+	ms=5000 node ./helpersForCommit/sleep.js
+	node ./helpersForCommit/checke2e.js
+
+	if [ $? != 0 ]
+	then {
+		echo -e "\033[31m e2e тесты не прошли! \n\033"
+		exit 1
+	}
+	else {
+		echo "e2e тесты прошли!"
+		npx eslint ./src/Application.tsx
+		if [ $? != 0 ]
+		then {
+			echo -e "\033[31m Ошибка eslint! \n\033"
+			exit 1
+		}
+		else {
+			echo "Линтер пройден успешно"
+			exit 0
+		}
+		fi
+	}
+	fi
+}
+fi
